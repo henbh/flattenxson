@@ -1,7 +1,6 @@
-package flattenxson.iml;
+package flattenxson.impl;
 
 import com.mongodb.DBObject;
-import flattenxson.exceptions.FlattenException;
 import flattenxson.exceptions.FlattenXsonException;
 import org.json.JSONObject;
 

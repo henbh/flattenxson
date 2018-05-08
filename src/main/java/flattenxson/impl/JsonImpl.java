@@ -1,4 +1,4 @@
-package flattenxson.iml;
+package flattenxson.impl;
 
 import flattenxson.exceptions.FlattenException;
 import flattenxson.exceptions.FlattenXsonException;

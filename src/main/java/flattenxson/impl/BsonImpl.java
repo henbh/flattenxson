@@ -1,4 +1,4 @@
-package flattenxson.iml;
+package flattenxson.impl;
 
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;

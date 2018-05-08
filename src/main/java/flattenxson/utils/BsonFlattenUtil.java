@@ -1,8 +1,8 @@
 package flattenxson.utils;
 
 import flattenxson.exceptions.FlattenXsonException;
-import flattenxson.iml.BsonImpl;
-import flattenxson.iml.BaseFlatten;
+import flattenxson.impl.BsonImpl;
+import flattenxson.impl.BaseFlatten;
 import org.bson.Document;
 
 import java.util.List;
