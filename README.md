@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/henbh7/flattenxson.svg?branch=master)](https://travis-ci.com/henbh7/flattenxson)
+
 FlattenXson
 ---------
 
