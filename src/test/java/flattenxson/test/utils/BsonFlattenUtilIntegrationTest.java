@@ -6,6 +6,9 @@ import org.bson.Document;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 
 public class BsonFlattenUtilIntegrationTest {
     @Test
@@ -32,14 +35,26 @@ public class BsonFlattenUtilIntegrationTest {
 
         try {
             Document bson = Document.parse(bsonString);
-            Document flattenDoc = BsonFlattenUtil.flattenDoc(bson);
 
-            System.out.println("Flatten Doc :::: " + flattenDoc);
+            //#1
+            Document flattenDoc1 = BsonFlattenUtil.flattenDoc(bson);
 
-            Document unflattenDoc = BsonFlattenUtil.unFlatten(flattenDoc.toJson());
+            //#2
+            ArrayList<Class<?>> classArrayList = new ArrayList<>();
+            classArrayList.add(ArrayList.class);
+            Document flattenDoc2 = BsonFlattenUtil.flattenDoc(bson, "**", 1, classArrayList);
+
+            //#3
+            Document flattenDoc3 = BsonFlattenUtil.flattenDoc(bson, "**", 1);
+
+            System.out.println("Flatten1 Doc :::: " + flattenDoc1);
+            System.out.println("Flatten2 Doc :::: " + flattenDoc2);
+            System.out.println("Flatten3 Doc :::: " + flattenDoc3);
+
+            Document unflattenDoc = BsonFlattenUtil.unFlatten(flattenDoc1.toJson());
             System.out.println("UnFlatten Doc :::: " + unflattenDoc);
 
-            Assert.assertFalse(!flattenDoc.toJson().contains("__"));
+            Assert.assertFalse(!flattenDoc1.toJson().contains("__"));
             Assert.assertFalse(unflattenDoc.toJson().contains("__"));
         } catch (FlattenXsonException e) {
             e.printStackTrace();

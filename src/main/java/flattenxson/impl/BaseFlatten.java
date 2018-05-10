@@ -4,14 +4,22 @@ import com.mongodb.DBObject;
 import flattenxson.exceptions.FlattenXsonException;
 import org.json.JSONObject;
 
+import javax.swing.text.Document;
 import java.util.*;
 
 public interface BaseFlatten {
     Object flatten(Object doc, String separatorChar, int maxDocLevelsSupported, List<Class<?>> unSupportedTypes) throws FlattenXsonException;
 
+    void flattenRecursive(String rootName,
+                          Object doc,
+                          Map<String, Object> newDoc,
+                          String separatorChar,
+                          int maxDocLevelsSupported,
+                          List<Class<?>> unSupportedTypes);
+
     Object unFlatten(String doc, String separatorChar) throws FlattenXsonException;
 
-    default void unFlattenRecursive(LinkedList splitKey, Object value, HashMap newDoc) {
+    default void unFlattenRecursive(LinkedList<String> splitKey, Object value, HashMap newDoc) {
 
         if (splitKey.size() == 1) {
             newDoc.put(String.valueOf(splitKey.get(0)), value);
@@ -50,7 +58,7 @@ public interface BaseFlatten {
     default boolean isFieldDocDepthValid(String fieldName, int maxDocLevelsSupported, String separatorChar) {
         boolean result = true;
 
-        if (fieldName.split("\\" + separatorChar).length > maxDocLevelsSupported) {
+        if (fieldName.split(buildSeparatorCharRegex(separatorChar)).length > maxDocLevelsSupported) {
             result = false;
         }
 
@@ -61,11 +69,22 @@ public interface BaseFlatten {
         return result;
     }
 
+    default String buildSeparatorCharRegex(String separatorChar) {
+        StringBuilder result = new StringBuilder();
+
+        for (char item : separatorChar.toCharArray()) {
+            result.append("\\");
+            result.append(item);
+        }
+
+        return result.toString();
+    }
+
     default HashMap unFlattenHelper(Set<String> docKeys, String separatorChar, Object doc) {
         HashMap newDoc = new HashMap();
 
         docKeys.forEach(key -> {
-            LinkedList splitKey = new LinkedList(Arrays.asList(key.split(separatorChar)));
+            LinkedList<String> splitKey = new LinkedList<>(Arrays.asList(key.split(separatorChar)));
             if (splitKey.size() > 0) {
                 if (doc instanceof DBObject) {
                     unFlattenRecursive(splitKey, ((DBObject) doc).get(key), newDoc);
@@ -82,5 +101,31 @@ public interface BaseFlatten {
         });
 
         return newDoc;
+    }
+
+    default void flatArrayObject(String rootName,
+                                 ArrayList arrayList,
+                                 Map<String, Object> newDoc,
+                                 String separatorChar,
+                                 int maxDocLevelsSupported,
+                                 List<Class<?>> unSupportedTypes) {
+        int index = 0;
+
+        for (Object item : arrayList) {
+            if (isTypeValid(item.getClass(), unSupportedTypes)) {
+                String fieldName = String.format("%s%s%d", rootName, separatorChar, index);
+
+                if (item instanceof org.bson.Document) {
+                    flattenRecursive(fieldName, item, newDoc, separatorChar, maxDocLevelsSupported, unSupportedTypes);
+                }
+                if (item instanceof HashMap) {
+                    flattenRecursive(fieldName, new JSONObject((HashMap)item), newDoc, separatorChar, maxDocLevelsSupported, unSupportedTypes);
+                } else {
+                    newDoc.put(fieldName, item);
+                }
+
+                index++;
+            }
+        }
     }
 }

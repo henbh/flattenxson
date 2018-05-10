@@ -9,7 +9,6 @@ import java.util.*;
 
 public class JsonImpl implements BaseFlatten {
 
-    @Override
     public JSONObject flatten(Object doc, String separatorChar, int maxDocLevelsSupported, List<Class<?>> unSupportedTypes) throws FlattenXsonException {
         Map<String, Object> newDoc = new HashMap<>();
         try {
@@ -22,13 +21,12 @@ public class JsonImpl implements BaseFlatten {
         return new JSONObject(newDoc);
     }
 
-
-    private void flattenRecursive(String rootName,
-                                  Object doc,
-                                  Map<String, Object> newDoc,
-                                  String separatorChar,
-                                  int maxDocLevelsSupported,
-                                  List<Class<?>> unSupportedTypes) {
+    public void flattenRecursive(String rootName,
+                                 Object doc,
+                                 Map<String, Object> newDoc,
+                                 String separatorChar,
+                                 int maxDocLevelsSupported,
+                                 List<Class<?>> unSupportedTypes) {
         if (doc instanceof JSONObject) {
             JSONObject document = (JSONObject) doc;
             Map<String, Object> objectMap = document.toMap();
@@ -48,6 +46,8 @@ public class JsonImpl implements BaseFlatten {
                         if (isTypeValid(fieldValue.getClass(), unSupportedTypes)) {
                             if (fieldValue instanceof HashMap) {
                                 flattenRecursive(key, new JSONObject((HashMap) fieldValue), newDoc, separatorChar, maxDocLevelsSupported, unSupportedTypes);
+                            } else if (fieldValue instanceof ArrayList) {
+                                flatArrayObject(key, (ArrayList) fieldValue, newDoc, separatorChar, maxDocLevelsSupported, unSupportedTypes);
                             } else {
                                 newDoc.put(key, fieldValue);
                             }
@@ -58,7 +58,6 @@ public class JsonImpl implements BaseFlatten {
         }
     }
 
-    @Override
     public JSONObject unFlatten(String doc, String separatorChar) throws FlattenXsonException {
         JSONObject result;
 
@@ -66,7 +65,7 @@ public class JsonImpl implements BaseFlatten {
             JSONObject jsonObject = new JSONObject(doc);
             HashMap newDoc = unFlattenHelper(jsonObject.keySet(), separatorChar, jsonObject);
             result = new JSONObject(newDoc);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new UnflattenException(
                     String.format("An error occurred while trying to unflat the following doc: %s", doc), e);
         }
