@@ -1,9 +1,7 @@
 package flattenxson.test.utils;
 
 import flattenxson.exceptions.FlattenXsonException;
-import flattenxson.utils.BsonFlattenUtil;
 import flattenxson.utils.JsonFlattenUtil;
-import org.bson.Document;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;

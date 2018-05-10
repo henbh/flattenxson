@@ -4,7 +4,6 @@ import com.mongodb.DBObject;
 import flattenxson.exceptions.FlattenXsonException;
 import org.json.JSONObject;
 
-import javax.swing.text.Document;
 import java.util.*;
 
 public interface BaseFlatten {
