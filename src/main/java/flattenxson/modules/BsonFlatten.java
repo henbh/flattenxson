@@ -1,4 +1,4 @@
-package flattenxson.utils;
+package flattenxson.modules;
 
 import flattenxson.exceptions.FlattenXsonException;
 import flattenxson.impl.BsonImpl;
@@ -7,7 +7,7 @@ import org.bson.Document;
 
 import java.util.List;
 
-public class BsonFlattenUtil {
+public class BsonFlatten {
     public static Document flattenDoc(Object doc, String separatorChar, int maxDocLevelsSupported, List<Class<?>> unSupportedTypes) throws FlattenXsonException {
         BaseFlatten baseFlatten = new BsonImpl();
         return (Document) baseFlatten.flatten(doc, separatorChar, maxDocLevelsSupported, unSupportedTypes);

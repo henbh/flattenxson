@@ -1,10 +1,11 @@
 package flattenxson.impl;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 import flattenxson.exceptions.FlattenException;
 import flattenxson.exceptions.FlattenXsonException;
 import flattenxson.exceptions.UnflattenException;
+import flattenxson.utils.DataUtil;
 import org.bson.Document;
 
 import java.util.*;
@@ -68,7 +69,7 @@ public class BsonImpl implements BaseFlatten {
         Document result = null;
 
         try {
-            DBObject bsonDoc = (DBObject) JSON.parse(doc);
+            DBObject bsonDoc = new BasicDBObject(DataUtil.jsonStringToMap(doc));
             HashMap newDoc = unFlattenHelper(bsonDoc.keySet(), separatorChar, bsonDoc);
             result = new Document(newDoc);
         } catch (Exception e) {

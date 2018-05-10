@@ -1,18 +1,17 @@
 package flattenxson.test.utils;
 
 import flattenxson.exceptions.FlattenXsonException;
-import flattenxson.utils.BsonFlattenUtil;
-import org.bson.Document;
+import flattenxson.modules.JsonFlatten;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
-
-public class BsonFlattenUtilIntegrationTest {
+public class JsonFlattenIntegrationTest {
     @Test
     public void test1() {
-        String bsonString = "{\n" +
+        String jsonString = "{\n" +
                 "  \"address\": {\n" +
                 "     \"building\": \"1007\",\n" +
                 "     \"coord\": [ -73.856077, 40.848447 ],\n" +
@@ -33,28 +32,28 @@ public class BsonFlattenUtilIntegrationTest {
                 "}";
 
         try {
-            Document bson = Document.parse(bsonString);
+            JSONObject json = new JSONObject(jsonString);
 
             //#1
-            Document flattenDoc1 = BsonFlattenUtil.flattenDoc(bson);
+            JSONObject flattenDoc1 = JsonFlatten.flattenDoc(json);
 
             //#2
             ArrayList<Class<?>> classArrayList = new ArrayList<>();
             classArrayList.add(ArrayList.class);
-            Document flattenDoc2 = BsonFlattenUtil.flattenDoc(bson, "**", 1, classArrayList);
+            JSONObject flattenDoc2 = JsonFlatten.flattenDoc(json, "**", 1, classArrayList);
 
             //#3
-            Document flattenDoc3 = BsonFlattenUtil.flattenDoc(bson, "**", 1);
+            JSONObject flattenDoc3 = JsonFlatten.flattenDoc(json, "**", 1);
 
             System.out.println("Flatten1 Doc :::: " + flattenDoc1);
             System.out.println("Flatten2 Doc :::: " + flattenDoc2);
             System.out.println("Flatten3 Doc :::: " + flattenDoc3);
 
-            Document unflattenDoc = BsonFlattenUtil.unFlatten(flattenDoc1.toJson());
+            JSONObject unflattenDoc = JsonFlatten.unFlatten(flattenDoc1.toString());
             System.out.println("UnFlatten Doc :::: " + unflattenDoc);
 
-            Assert.assertFalse(!flattenDoc1.toJson().contains("__"));
-            Assert.assertFalse(unflattenDoc.toJson().contains("__"));
+            Assert.assertFalse(!flattenDoc1.toString().contains("__"));
+            Assert.assertFalse(unflattenDoc.toString().contains("__"));
         } catch (FlattenXsonException e) {
             e.printStackTrace();
         }
@@ -62,7 +61,7 @@ public class BsonFlattenUtilIntegrationTest {
 
     @Test
     public void test2() {
-        String bsonString = "{\n" +
+        String jsonString = "{\n" +
                 "  \"address\": {\n" +
                 "     \"building\": \"1007\",\n" +
                 "     \"coord\": [ -73.856077, 40.848447 ],\n" +
@@ -74,7 +73,7 @@ public class BsonFlattenUtilIntegrationTest {
                 "  \"grades\": [\n";
 
         try {
-            BsonFlattenUtil.unFlatten(bsonString);
+            JsonFlatten.unFlatten(jsonString);
         } catch (FlattenXsonException e) {
             e.printStackTrace();
             Assert.assertTrue(true);

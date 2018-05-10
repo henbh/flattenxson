@@ -1,4 +1,4 @@
-package flattenxson.utils;
+package flattenxson.modules;
 
 import flattenxson.exceptions.FlattenXsonException;
 import flattenxson.impl.JsonImpl;
@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class JsonFlattenUtil {
+public class JsonFlatten {
     public static JSONObject flattenDoc(Object doc, String separatorChar, int maxDocLevelsSupported, List<Class<?>> unSupportedTypes) throws FlattenXsonException {
         BaseFlatten baseFlatten = new JsonImpl();
         return (JSONObject) baseFlatten.flatten(doc, separatorChar, maxDocLevelsSupported, unSupportedTypes);

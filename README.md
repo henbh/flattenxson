@@ -36,8 +36,8 @@ String bsonString = "{\n" +
 
         try {
             Document bson = Document.parse(bsonString);
-            Document flattenDoc = BsonFlattenUtil.flattenDoc(bson);
-            Document unflattenDoc = BsonFlattenUtil.unFlatten(flattenDoc.toJson());
+            Document flattenDoc = BsonFlatten.flattenDoc(bson);
+            Document unflattenDoc = BsonFlatten.unFlatten(flattenDoc.toJson());
         } catch (FlattenXsonException e) {
             e.printStackTrace();
         }
